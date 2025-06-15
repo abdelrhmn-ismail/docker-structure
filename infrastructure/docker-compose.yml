@@ -1,0 +1,58 @@
+networks:
+  laravel:
+    external: true
+    name: laravel_shared
+
+
+services:
+
+
+    mysql:
+        image: mysql:8.0
+        container_name: mysql
+        restart: unless-stopped
+        volumes:
+            - ./mysql:/var/lib/mysql
+        ports:
+            - "127.0.0.1:3307:3306"
+        environment:
+            UPLOAD_LIMIT: 256M
+            MAX_EXECUTION_TIME: 600
+            MYSQL_ROOT_PASSWORD: q85Xv82Zq2Kaw2rT
+        networks:
+            - laravel
+
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        depends_on:
+            - mysql
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: mysql       
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 0
+        volumes:
+            - ./php/php.ini:/usr/local/etc/php/conf.d/uploads.ini
+        restart: unless-stopped
+        networks:
+            - laravel
+
+
+    redis:
+        image: redis:alpine
+        container_name: redis
+        ports:
+            - "127.0.0.1:6379:6379"
+        volumes:
+            - ./redis:/data
+        networks:
+            - laravel
+        restart: unless-stopped
+
+        
+volumes:
+    redis:
+        driver: local
