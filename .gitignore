@@ -1,0 +1,6 @@
+# Ignore MySQL data directory completely
+/infrastructure/mysql/
+
+# Ignore src directories
+/lms/src/
+/tms/src/
